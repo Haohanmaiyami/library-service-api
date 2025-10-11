@@ -6,14 +6,12 @@ from datetime import timedelta
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "devsecret")
 
 
 DEBUG = os.getenv("DJANGO_DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "*").split(",")
-
 
 
 INSTALLED_APPS = [
@@ -70,10 +68,9 @@ DATABASES = {
 }
 
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa: E501
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -94,7 +91,6 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 
 USE_TZ = True
-
 
 
 STATIC_URL = "static/"
@@ -127,6 +123,10 @@ SPECTACULAR_SETTINGS = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=int(os.getenv("SIMPLEJWT_ACCESS_LIFETIME_MIN", "720"))),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=int(os.getenv("SIMPLEJWT_REFRESH_LIFETIME_DAYS", "30"))),
+    "ACCESS_TOKEN_LIFETIME": timedelta(
+        minutes=int(os.getenv("SIMPLEJWT_ACCESS_LIFETIME_MIN", "720"))
+    ),
+    "REFRESH_TOKEN_LIFETIME": timedelta(
+        days=int(os.getenv("SIMPLEJWT_REFRESH_LIFETIME_DAYS", "30"))
+    ),
 }

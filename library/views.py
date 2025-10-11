@@ -10,6 +10,7 @@ from .permissions import IsAdminOrReadOnly, IsStaffForMutationOrOwnerRead
 
 User = get_user_model()
 
+
 class AuthorViewSet(viewsets.ModelViewSet):
     queryset = Author.objects.all().order_by("last_name", "first_name")
     serializer_class = AuthorSerializer
@@ -17,11 +18,18 @@ class AuthorViewSet(viewsets.ModelViewSet):
     search_fields = ["first_name", "last_name"]
     ordering_fields = ["last_name", "birth_year", "first_name"]
 
+
 class BookViewSet(viewsets.ModelViewSet):
     queryset = Book.objects.select_related("author").all().order_by("title")
     serializer_class = BookSerializer
     permission_classes = [IsAdminOrReadOnly]
-    search_fields = ["title", "genre", "book_id", "author__last_name", "author__first_name"]
+    search_fields = [
+        "title",
+        "genre",
+        "book_id",
+        "author__last_name",
+        "author__first_name",
+    ]
     ordering_fields = ["title", "published_year", "pages"]
 
     def get_queryset(self):
@@ -29,13 +37,14 @@ class BookViewSet(viewsets.ModelViewSet):
         q = self.request.query_params
         if title := q.get("title"):
             qs = qs.filter(title__icontains=title)
-        if author := q.get("author"):   # ID автора
+        if author := q.get("author"):  # ID автора
             qs = qs.filter(author_id=author)
         if genre := q.get("genre"):
             qs = qs.filter(genre__icontains=genre)
         if book_id := q.get("book_id"):
             qs = qs.filter(book_id__icontains=book_id)
         return qs
+
 
 class BorrowViewSet(viewsets.ModelViewSet):
     queryset = Borrow.objects.select_related("book", "user").all()
@@ -61,11 +70,17 @@ class BorrowViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=["post"])
     def return_book(self, request, pk=None):
         if not request.user.is_staff:
-            return Response({"detail": "Только персонал может закрывать выдачу."}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {"detail": "Только персонал может закрывать выдачу."},
+                status=status.HTTP_403_FORBIDDEN,
+            )
         borrow = self.get_object()
         if borrow.returned_at:
-            return Response({"detail": "Книга уже возвращена."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "Книга уже возвращена."}, status=status.HTTP_400_BAD_REQUEST
+            )
         from django.utils import timezone
+
         borrow.returned_at = timezone.now()
         borrow.save(update_fields=["returned_at"])
         return Response(BorrowSerializer(borrow).data, status=status.HTTP_200_OK)

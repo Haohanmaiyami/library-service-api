@@ -117,3 +117,12 @@ POSTGRES_USER=library_user
 POSTGRES_PASSWORD=library_pass
 ```
 
+Имя пользователя  admin
+Адрес электронной почты: admin@mail.ru
+Password: admin
+
+
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2Mjc0MjMzMSwiaWF0IjoxNzYwMTUwMzMxLCJqdGkiOiJhMDA3M2U4NTIzOGY0ZjlmYTZhYTFlYzY3MWIwZDczMCIsInVzZXJfaWQiOiIxIn0.s3TWCGdFj1ULmBrN6nPofvJdYZQ0h0aV06nNWbs643Y",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMTY5NTMxLCJpYXQiOjE3NjAxNTAzMzEsImp0aSI6IjhhZDg2ZWNlNmYzYzQyZTNiZWI2YzkwZjhiZDY5Njg3IiwidXNlcl9pZCI6IjEifQ.guRP9mdKdtOldEZw_4hbMHmQldX7QDb9Nlg-UbwUBRA"
+}

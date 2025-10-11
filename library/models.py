@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
+
 class Author(models.Model):
     first_name = models.CharField(max_length=120)
     last_name = models.CharField(max_length=120, db_index=True)
@@ -14,10 +15,13 @@ class Author(models.Model):
     def __str__(self):
         return f"{self.first_name} {self.last_name}".strip()
 
+
 class Book(models.Model):
     title = models.CharField(max_length=255, db_index=True)
     author = models.ForeignKey(Author, on_delete=models.PROTECT, related_name="books")
-    book_id = models.CharField(max_length=50, unique=True, db_index=True)  # внутренний ID
+    book_id = models.CharField(
+        max_length=50, unique=True, db_index=True
+    )  # внутренний ID
     published_year = models.PositiveIntegerField(null=True, blank=True)
     pages = models.PositiveIntegerField(null=True, blank=True)
     genre = models.CharField(max_length=120, blank=True)
@@ -30,8 +34,11 @@ class Book(models.Model):
     def __str__(self):
         return f"{self.title} ({self.book_id})"
 
+
 class Borrow(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="borrows")
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="borrows"
+    )
     book = models.ForeignKey(Book, on_delete=models.PROTECT, related_name="borrows")
     borrowed_at = models.DateTimeField(default=timezone.now)
     due_at = models.DateTimeField()
@@ -48,4 +55,4 @@ class Borrow(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.user} -> {self.book} ({'returned' if self.returned_at else 'active'})"
+        return f"{self.user} -> {self.book} ({'returned' if self.returned_at else 'active'})"  # noqa: E501
