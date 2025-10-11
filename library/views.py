@@ -3,10 +3,12 @@ from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-
+from rest_framework import generics, permissions
 from .models import Author, Book, Borrow
 from .serializers import AuthorSerializer, BookSerializer, BorrowSerializer
 from .permissions import IsAdminOrReadOnly, IsStaffForMutationOrOwnerRead
+from .serializers import UserRegisterSerializer, UserPublicSerializer
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 User = get_user_model()
 
@@ -61,11 +63,27 @@ class BorrowViewSet(viewsets.ModelViewSet):
         return qs.filter(user=user)
 
     def perform_create(self, serializer):
+        # только staff может создавать выдачи
         if not self.request.user.is_staff:
-            raise PermissionError("Только персонал может создавать выдачи.")
-        target_user_id = self.request.query_params.get("target_user")
-        target_user = get_object_or_404(User, id=target_user_id)
-        serializer.save(user=target_user)
+            raise PermissionDenied("Только персонал может создавать выдачи.")
+
+        # берем ID пользователя: сначала из тела, затем из query (?user= / ?target_user=)
+        user_id = (
+            self.request.data.get("user")
+            or self.request.query_params.get("user")
+            or self.request.query_params.get("target_user")
+        )
+
+        if user_id:
+            user = User.objects.filter(pk=user_id).first()
+            if not user:
+                # отдаём 400, а не 404 на весь запрос
+                raise ValidationError({"user": "Пользователь не найден."})
+        else:
+            # если не передали — выдаём на текущего staff-пользователя
+            user = self.request.user
+
+        serializer.save(user=user)
 
     @action(detail=True, methods=["post"])
     def return_book(self, request, pk=None):
@@ -84,3 +102,24 @@ class BorrowViewSet(viewsets.ModelViewSet):
         borrow.returned_at = timezone.now()
         borrow.save(update_fields=["returned_at"])
         return Response(BorrowSerializer(borrow).data, status=status.HTTP_200_OK)
+
+
+class RegisterView(generics.CreateAPIView):
+    """
+    POST /api/auth/register/
+    Создаёт пользователя. Доступно без авторизации.
+    """
+    serializer_class = UserRegisterSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class MeView(generics.RetrieveAPIView):
+    """
+    GET /api/auth/me/
+    Возвращает профиль текущего пользователя. Нужен JWT Bearer токен.
+    """
+    serializer_class = UserPublicSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user

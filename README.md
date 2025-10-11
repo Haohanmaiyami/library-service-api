@@ -111,7 +111,7 @@ POST /api/auth/jwt/refresh/ — обновить access
 PostgreSQL поднимается через docker-compose (сервис db).
 Переменные окружения в docker-compose.yml:
 
-```commandline
+```
 POSTGRES_DB=library_db
 POSTGRES_USER=library_user
 POSTGRES_PASSWORD=library_pass
@@ -125,4 +125,29 @@ Password: admin
 {
     "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2Mjc0MjMzMSwiaWF0IjoxNzYwMTUwMzMxLCJqdGkiOiJhMDA3M2U4NTIzOGY0ZjlmYTZhYTFlYzY3MWIwZDczMCIsInVzZXJfaWQiOiIxIn0.s3TWCGdFj1ULmBrN6nPofvJdYZQ0h0aV06nNWbs643Y",
     "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMTY5NTMxLCJpYXQiOjE3NjAxNTAzMzEsImp0aSI6IjhhZDg2ZWNlNmYzYzQyZTNiZWI2YzkwZjhiZDY5Njg3IiwidXNlcl9pZCI6IjEifQ.guRP9mdKdtOldEZw_4hbMHmQldX7QDb9Nlg-UbwUBRA"
+}
+
+
+{
+    "username": "ayan",
+    "email": "ayan@example.com",
+    "first_name": "Ayan",
+    "last_name": "Kharitonov"
+}
+{
+    "refresh": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTc2MjgxNTQxNywiaWF0IjoxNzYwMjIzNDE3LCJqdGkiOiI1ZGQ3MDhhZTc0YzI0ZjEwOTEwNDViZjA5MTlmMDY4MyIsInVzZXJfaWQiOiI0In0.P0_xkytqMgZXm_0qBw9YJs-L5M9UOtas85PqCKctrCY",
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMjQyNjE3LCJpYXQiOjE3NjAyMjM0MTcsImp0aSI6Ijk2NDBmNGFmMGI4ZjQxNjZhMTJlYzg3MDc1NjU1YjQ4IiwidXNlcl9pZCI6IjQifQ.CZ9_iblgeuAcOqfupawnCxjYghwKz_Qw24vyG18r5GA"
+}
+
+{
+    "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzYwMjQyODIzLCJpYXQiOjE3NjAyMjM2MjMsImp0aSI6IjIzNDBhNmYxMzQ3ZjRmOWJiZTcwMGYwOTVlYmI0MTUyIiwidXNlcl9pZCI6IjQifQ.bGAyBUVWY81l1jvrHHpRVmnrl2oG29RPt_8BINkLjLs"
+}
+
+{
+    "id": 4,
+    "username": "ayan",
+    "email": "ayan@example.com",
+    "first_name": "Ayan",
+    "last_name": "Kharitonov",
+    "is_staff": true
 }
