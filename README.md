@@ -1,0 +1,119 @@
+# 📚 Library — API DRF дипломная работа (DF1)
+
+**Задача:** REST API для управления библиотекой: книги, авторы, пользователи и выдачи.  
+**Стек:** Django 5, DRF, SimpleJWT, PostgreSQL, drf-spectacular, Docker Compose.
+---
+
+## Запуск через Docker
+
+1) Сгенерировать `requirements.txt` из Poetry:
+```bash
+poetry export -f requirements.txt --output requirements.txt --without-hashes
+```
+Собрать и запустить:
+```bash
+docker compose up --build
+```
+
+Доступы:
+
+Приложение: http://localhost:8000
+
+Swagger UI: http://localhost:8000/api/docs/
+
+Redoc: http://localhost:8000/api/redoc/
+
+OpenAPI JSON: http://localhost:8000/api/schema/
+
+## Локальный запуск (без Docker)
+
+```
+poetry install
+poetry run python manage.py migrate
+poetry run python manage.py createsuperuser   # по желанию
+poetry run python manage.py runserver
+```
+
+## Аутентификация (JWT)
+
+Эндпоинты:
+
+POST /api/auth/jwt/create/ — получить access/refresh
+
+POST /api/auth/jwt/refresh/ — обновить access
+
+
+# Эндпоинты
+## Авторы
+
+- GET /api/authors/?search=tolstoy&ordering=last_name
+
+- POST /api/authors/ (только staff)
+
+- GET /api/authors/{id}/
+
+- PUT/PATCH/DELETE /api/authors/{id}/ (только staff)
+
+## Книги
+
+- GET /api/books/?title=&author=&genre=&book_id= (поиск/фильтры)
+
+- POST /api/books/ (только staff)
+
+- GET /api/books/{id}/
+
+- PUT/PATCH/DELETE /api/books/{id}/ (только staff)
+
+```
+Поля книги: title, author, book_id (уникальный), published_year, pages, genre, description.
+```
+
+## Выдачи (Borrow)
+
+- GET /api/borrows/ — staff видит всё; пользователь — только свои
+
+- POST /api/borrows/?target_user=<id> — выдать книгу пользователю <id> (только staff)
+
+- POST /api/borrows/{id}/return_book/ — закрыть выдачу (только staff)
+
+## Права доступа (Permissions)
+
+- IsAdminOrReadOnly — для авторов и книг (мутации — только staff, чтение — всем).
+
+- IsStaffForMutationOrOwnerRead — для выдач (управляет staff; пользователь читает только свои записи).
+
+## Валидация (Serializers)
+
+- book_id — непустой и уникальный.
+
+- published_year — разумные границы.
+
+- pages > 0.
+
+- due_at — только будущее время.
+
+- запрет второй активной выдачи одной и той же книги.
+
+## OpenAPI (Swagger/Redoc)
+
+- Схема: /api/schema/
+
+- Swagger UI: /api/docs/
+
+- Redoc: /api/redoc/
+
+## PEP8
+
+- Поддерживается с помощью flake8 (проверка) и black (форматирование).
+
+## База данных
+
+PostgreSQL поднимается через docker-compose (сервис db).
+Переменные окружения в docker-compose.yml:
+
+```commandline
+POSTGRES_DB=library_db
+POSTGRES_USER=library_user
+POSTGRES_PASSWORD=library_pass
+```
+
