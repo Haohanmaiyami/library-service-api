@@ -173,3 +173,5 @@ Password: admin
     "last_name": "Kharitonov",
     "is_staff": true
 }
+
+done
