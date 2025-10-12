@@ -15,7 +15,7 @@ poetry export -f requirements.txt --output requirements.txt --without-hashes
 docker compose up --build
 ```
 
-Доступы:
+## Доступы:
 
 Приложение: http://localhost:8000
 
@@ -30,13 +30,22 @@ OpenAPI JSON: http://localhost:8000/api/schema/
 ```
 poetry install
 poetry run python manage.py migrate
-poetry run python manage.py createsuperuser   # по желанию
+poetry run python manage.py createsuperuser
 poetry run python manage.py runserver
 ```
 
+## Создание суперпользователя в контейнере
+
+```
+# после первого запуска контейнеров
+docker compose exec web python manage.py createsuperuser
+# затем получи JWT админа через /api/auth/jwt/create/
+```
+
+
 ## Аутентификация (JWT)
 
-Эндпоинты:
+#### Эндпоинты:
 
 POST /api/auth/jwt/create/ — получить access/refresh
 
@@ -94,13 +103,6 @@ POST /api/auth/jwt/refresh/ — обновить access
 
 - запрет второй активной выдачи одной и той же книги.
 
-## OpenAPI (Swagger/Redoc)
-
-- Схема: /api/schema/
-
-- Swagger UI: /api/docs/
-
-- Redoc: /api/redoc/
 
 ## PEP8
 
@@ -111,11 +113,31 @@ POST /api/auth/jwt/refresh/ — обновить access
 PostgreSQL поднимается через docker-compose (сервис db).
 Переменные окружения в docker-compose.yml:
 
+# .env.example
+
+## Django
+```commandline
+SECRET_KEY=change_me
+DEBUG=1
+ALLOWED_HOSTS=*
+```
+
+
+## Database (PostgreSQL)
 ```
 POSTGRES_DB=library_db
 POSTGRES_USER=library_user
 POSTGRES_PASSWORD=library_pass
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
 ```
+
+
+
+
+
+
+
 
 Имя пользователя  admin
 Адрес электронной почты: admin@mail.ru
