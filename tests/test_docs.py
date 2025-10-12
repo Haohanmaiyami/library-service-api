@@ -1,5 +1,6 @@
 import pytest
 
+
 @pytest.mark.django_db
 def test_openapi_schema_and_docs(api):
     assert api.get("/api/schema/").status_code == 200

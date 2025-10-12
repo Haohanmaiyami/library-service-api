@@ -1,5 +1,4 @@
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -67,7 +66,7 @@ class BorrowViewSet(viewsets.ModelViewSet):
         if not self.request.user.is_staff:
             raise PermissionDenied("Только персонал может создавать выдачи.")
 
-        # берем ID пользователя: сначала из тела, затем из query (?user= / ?target_user=)
+        # берем ID пользователя: сначала из тела, затем из query(?user= / ?target_user=)
         user_id = (
             self.request.data.get("user")
             or self.request.query_params.get("user")
@@ -109,6 +108,7 @@ class RegisterView(generics.CreateAPIView):
     POST /api/auth/register/
     Создаёт пользователя. Доступно без авторизации.
     """
+
     serializer_class = UserRegisterSerializer
     permission_classes = [permissions.AllowAny]
 
@@ -118,6 +118,7 @@ class MeView(generics.RetrieveAPIView):
     GET /api/auth/me/
     Возвращает профиль текущего пользователя. Нужен JWT Bearer токен.
     """
+
     serializer_class = UserPublicSerializer
     permission_classes = [permissions.IsAuthenticated]
 

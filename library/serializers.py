@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 
 
-
 class AuthorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Author
@@ -89,6 +88,7 @@ User = get_user_model()
 
 class UserPublicSerializer(serializers.ModelSerializer):
     """Безопасные поля профиля для ответа наружу."""
+
     class Meta:
         model = User
         fields = ("id", "username", "email", "first_name", "last_name", "is_staff")
@@ -99,12 +99,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     Регистрация: принимает пароль дважды, валидирует по Django validators,
     создаёт пользователя через create_user (пароль хэшируется).
     """
+
     password = serializers.CharField(write_only=True, style={"input_type": "password"})
     password2 = serializers.CharField(write_only=True, style={"input_type": "password"})
 
     class Meta:
         model = User
-        fields = ("username", "email", "first_name", "last_name", "password", "password2")
+        fields = (
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "password",
+            "password2",
+        )
         # делаем нефундаментальные поля необязательными
         extra_kwargs = {
             "email": {"required": False, "allow_blank": True},
@@ -114,12 +122,16 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value: str) -> str:
         if User.objects.filter(username=value).exists():
-            raise serializers.ValidationError("Пользователь с таким username уже существует.")
+            raise serializers.ValidationError(
+                "Пользователь с таким username уже существует."
+            )
         return value
 
     def validate_email(self, value: str) -> str:
         if value and User.objects.filter(email=value).exists():
-            raise serializers.ValidationError("Пользователь с таким email уже существует.")
+            raise serializers.ValidationError(
+                "Пользователь с таким email уже существует."
+            )
         return value
 
     def validate(self, attrs):
