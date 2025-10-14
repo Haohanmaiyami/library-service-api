@@ -1,8 +1,9 @@
-from django.utils import timezone
-from rest_framework import serializers
-from .models import Author, Book, Borrow
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
+from django.utils import timezone
+from rest_framework import serializers
+
+from .models import Author, Book, Borrow
 
 
 class AuthorSerializer(serializers.ModelSerializer):

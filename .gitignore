@@ -13,6 +13,7 @@ __pycache__/
 # Env/Secrets
 .env
 .env.*
+!.env.example
 
 # Coverage
 .coverage

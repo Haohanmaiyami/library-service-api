@@ -40,3 +40,8 @@ exclude = [
   "*/site-packages/*",
   "**/migrations/*"
 ]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+known_first_party = ["config", "library"]

@@ -1,6 +1,6 @@
 import pytest
-from django.utils import timezone
 from conftest import login_and_get_headers
+from django.utils import timezone
 
 
 @pytest.mark.django_db

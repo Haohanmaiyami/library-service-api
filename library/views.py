@@ -1,13 +1,18 @@
 from django.contrib.auth import get_user_model
-from rest_framework import viewsets, status
+from rest_framework import generics, permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework import generics, permissions
-from .models import Author, Book, Borrow
-from .serializers import AuthorSerializer, BookSerializer, BorrowSerializer
-from .permissions import IsAdminOrReadOnly, IsStaffForMutationOrOwnerRead
-from .serializers import UserRegisterSerializer, UserPublicSerializer
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.response import Response
+
+from .models import Author, Book, Borrow
+from .permissions import IsAdminOrReadOnly, IsStaffForMutationOrOwnerRead
+from .serializers import (
+    AuthorSerializer,
+    BookSerializer,
+    BorrowSerializer,
+    UserPublicSerializer,
+    UserRegisterSerializer,
+)
 
 User = get_user_model()
 
