@@ -1,3 +1,190 @@
+# 📚 Library Management API — DRF Diploma Project (DF1)
+
+**Goal:** REST API for library management: books, authors, users and borrows.  
+**Stack:** Django 5, Django REST Framework, SimpleJWT, PostgreSQL, drf-spectacular, Docker Compose.
+
+---
+
+## 🚀 Run with Docker
+
+1) Generate `requirements.txt` from Poetry:
+
+```bash
+poetry export -f requirements.txt --output requirements.txt --without-hashes
+```
+
+2) Build and start containers:
+
+```bash
+docker compose up --build
+```
+
+---
+
+## 🌐 URLs
+
+Application:  
+http://localhost:8000  
+
+Swagger UI:  
+http://localhost:8000/api/docs/  
+
+Redoc:  
+http://localhost:8000/api/redoc/  
+
+OpenAPI JSON:  
+http://localhost:8000/api/schema/  
+
+---
+
+## 💻 Local run (without Docker)
+
+```bash
+poetry install
+poetry run python manage.py migrate
+poetry run python manage.py createsuperuser
+poetry run python manage.py runserver
+```
+
+---
+
+## 👤 Creating a superuser in the container
+
+```bash
+# after the first container start
+docker compose exec web python manage.py createsuperuser
+# then get admin JWT via /api/auth/jwt/create/
+```
+
+---
+
+## 🔐 Authentication (JWT)
+
+### Endpoints
+
+- `POST /api/auth/jwt/create/` — get access/refresh tokens  
+- `POST /api/auth/jwt/refresh/` — refresh access token  
+
+All protected endpoints require a valid **access** token in the `Authorization: Bearer <token>` header.
+
+---
+
+# 📡 API Endpoints
+
+## 👥 Authors
+
+- `GET /api/authors/?search=tolstoy&ordering=last_name` — list with search and ordering  
+- `POST /api/authors/` — create (staff only)  
+- `GET /api/authors/{id}/` — retrieve  
+- `PUT /api/authors/{id}/` — full update (staff only)  
+- `PATCH /api/authors/{id}/` — partial update (staff only)  
+- `DELETE /api/authors/{id}/` — delete (staff only)  
+
+---
+
+## 📘 Books
+
+- `GET /api/books/?title=&author=&genre=&book_id=` — list with filters/search  
+- `POST /api/books/` — create (staff only)  
+- `GET /api/books/{id}/` — retrieve  
+- `PUT /api/books/{id}/` — full update (staff only)  
+- `PATCH /api/books/{id}/` — partial update (staff only)  
+- `DELETE /api/books/{id}/` — delete (staff only)  
+
+```text
+Book fields:
+- title
+- author
+- book_id (unique)
+- published_year
+- pages
+- genre
+- description
+```
+
+---
+
+## 📚 Borrows
+
+- `GET /api/borrows/`  
+  - staff users see **all** borrows  
+  - regular users see **only their own** records  
+
+- `POST /api/borrows/?target_user=<id>` — issue a book to user `<id>` (staff only)  
+
+- `POST /api/borrows/{id}/return_book/` — close a borrow / mark as returned (staff only)  
+
+---
+
+## 🛡️ Permissions
+
+- **IsAdminOrReadOnly** — used for authors and books  
+  - safe methods (GET, HEAD, OPTIONS) — available to everyone  
+  - write operations (POST, PUT, PATCH, DELETE) — **staff only**
+
+- **IsStaffForMutationOrOwnerRead** — used for borrows  
+  - staff can create and modify any borrow  
+  - regular user can **only read** their own borrows  
+
+---
+
+## ✅ Validation (Serializers)
+
+- `book_id` — required and unique  
+- `published_year` — must be within a reasonable range  
+- `pages` — must be `> 0`  
+- `due_at` — must be in the future  
+- second active borrow of the **same book** for the same user is forbidden  
+
+---
+
+## 🧹 Code style (PEP8)
+
+PEP8 is enforced with:
+
+- **flake8** — linting  
+- **black** — formatting  
+
+---
+
+## 🗄️ Database
+
+PostgreSQL is started via `docker-compose` (service `db`).  
+Environment variables are configured via `.env` file and used in `docker-compose.yml`.
+
+---
+
+## ⚙️ Environment variables (`.env.example`)
+
+### Django
+
+```bash
+SECRET_KEY=change_me
+DEBUG=1
+ALLOWED_HOSTS=*
+```
+
+### Database (PostgreSQL)
+
+```bash
+POSTGRES_DB=library_db
+POSTGRES_USER=library_user
+POSTGRES_PASSWORD=library_pass
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+```
+
+---
+
+## 👨‍💻 Default admin credentials (for testing)
+
+- Username: `admin`  
+- Email: `admin@mail.ru`  
+- Password: `admin`
+
+
+
+
 # 📚 Library — API DRF дипломная работа (DF1)
 
 **Задача:** REST API для управления библиотекой: книги, авторы, пользователи и выдачи.  
